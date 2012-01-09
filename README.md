@@ -4,7 +4,7 @@ Frontend JavaScript library for interacting with the GitHub API v3.
 
 # Dependencies
 
-There are **no dependencies** in the front end. You must have [node.js](http://nodejs.org/), [RequireJS](http://requirejs.org/) installed via [NPM](http://npmjs.org/) and [make](http://www.gnu.org/software/make/) to build the code.
+There are **no dependencies** in the front end. You must have [node.js](http://nodejs.org/), [UglifyJS](https://github.com/mishoo/UglifyJS) and [make](http://www.gnu.org/software/make/) to build the code. You can build the code by runnin `make` from your terminal.
 
 # Licence
 
