@@ -1,4 +1,4 @@
-(function(exports) {
+define(function() {
 	// Initialise the class
 	function GitHub(options) {
 		// Set any passed options
@@ -11,5 +11,5 @@
 	require(['options']);
 	
 	// Expose the class
-	exports.GitHub = GitHub;
-}(this));
+	window.GitHub = GitHub;
+});

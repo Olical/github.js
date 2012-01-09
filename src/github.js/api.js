@@ -1,4 +1,4 @@
-(function() {
+define(function() {
 	/**
 	 * Add the implement method to the class
 	 * This is not added in the prototype because it is used during construction
@@ -10,4 +10,4 @@
 		// Add the passed value to the prototype
 		this.prototype[key] = value;
 	};
-}());
+});
