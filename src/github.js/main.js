@@ -8,10 +8,7 @@
 	}
 	
 	// Load main modules
-	require([
-		'options',
-		'api'
-	]);
+	require(['options']);
 	
 	// Expose the class
 	exports.GitHub = GitHub;
