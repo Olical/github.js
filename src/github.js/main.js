@@ -6,7 +6,7 @@ define(function() {
 	}
 	
 	// Load main modules
-	require(['options']);
+	require(['options', 'api']);
 	
 	// Expose the class
 	window.GitHub = GitHub;
