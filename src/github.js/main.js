@@ -2,9 +2,7 @@ define(function() {
 	// Initialise the class
 	function GitHub(options) {
 		// Set any passed options
-		if(options) {
-			this.setOptions(options);
-		}
+		this.setOptions(options);
 	}
 	
 	// Load main modules
