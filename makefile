@@ -4,7 +4,8 @@ default: normal minified
 g=src/github.js/
 files=	${g}main.js\
 		${g}options.js\
-		${g}api.js
+		${g}api.js\
+		${g}footer.js
 
 normal:
 	cat ${files} > github.js
