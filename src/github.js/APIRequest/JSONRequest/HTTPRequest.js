@@ -33,12 +33,8 @@ HTTPRequest.prototype.setOptions = setOptions;
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 HTTPRequest.prototype.send = function(callback) {
-	// Initialise variables
-	var self = this,
-		request = null;
-	
 	// Initialise the request
-	request = new XMLHttpRequest();
+	var request = new XMLHttpRequest();
 	request.open(this.options.method, this.options.url, this.options.async, this.options.user, this.options.password);
 	
 	if(this.options.async && callback) {
