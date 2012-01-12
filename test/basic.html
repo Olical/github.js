@@ -6,7 +6,9 @@
 		<script type='text/javascript'>
 			var client = new GitHub();
 			console.log('Gists:');
-			console.log(client.gists.getGists('Wolfy87'));
+			client.gists.getGists('Wolfy87', function(gists) {
+				console.log(gists);
+			});
 		</script>
 	</head>
 	
