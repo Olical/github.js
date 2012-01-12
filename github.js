@@ -138,9 +138,6 @@ JSONRequest.prototype.handleResponse = function(response) {
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 JSONRequest.prototype.send = function(callback) {
-	// Initialise variables
-	var self = this;
-	
 	// Perform this differently depending on the async option
 	if(this.options.async) {
 		// Async, use a callback
