@@ -3,6 +3,11 @@
 	<head>
 		<title>github.js - Basic test</title>
 		<script type='text/javascript' src='../github.js'></script>
+		<script type='text/javascript'>
+			var client = new GitHub();
+			console.log('Gists:');
+			console.log(client.gists.getGists('Wolfy87'));
+		</script>
 	</head>
 	
 	<body>
