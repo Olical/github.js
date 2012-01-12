@@ -3,8 +3,8 @@ default: normal minified
 # Set up file lists
 g=src/github.js/
 files=	${g}main.js\
-		${g}options.js\
 		${g}api.js\
+		${g}options.js\
 		${g}footer.js
 
 normal:
