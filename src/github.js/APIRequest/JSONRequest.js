@@ -6,6 +6,7 @@
  * @param {Object} options List of options to pass to the class
  */
 function JSONRequest(options) {
+	// Set the users passed options
 	HTTPRequest.call(this, options);
 }
 
