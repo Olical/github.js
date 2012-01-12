@@ -1,3 +1,7 @@
+/**
+ * GitHub JavaScript API v0.0.0
+ * https://github.com/Wolfy87/github.js
+ */
 (function(exports) {
 	/**
 	 * GitHub API v3 class
