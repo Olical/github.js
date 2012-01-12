@@ -6,9 +6,9 @@ files=	${g}main.js\
 		${g}api.js\
 		${g}options.js\
 		\
-		${g}APIRequest.js\
-		${g}APIRequest/JSONRequest.js\
 		${g}APIRequest/JSONRequest/HTTPRequest.js\
+		${g}APIRequest/JSONRequest.js\
+		${g}APIRequest.js\
 		\
 		${g}footer.js
 
