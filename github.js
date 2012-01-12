@@ -81,12 +81,8 @@ HTTPRequest.prototype.setOptions = setOptions;
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 HTTPRequest.prototype.send = function(callback) {
-	// Initialise variables
-	var self = this,
-		request = null;
-	
 	// Initialise the request
-	request = new XMLHttpRequest();
+	var request = new XMLHttpRequest();
 	request.open(this.options.method, this.options.url, this.options.async, this.options.user, this.options.password);
 	
 	if(this.options.async && callback) {
@@ -106,6 +102,127 @@ HTTPRequest.prototype.send = function(callback) {
 	// If it is not an async request, send back the results instantly
 	if(!this.options.async) {
 		return request.responseText;
+	}
+};/**
+ * JSON request class
+ * Allows you to load and parse JSON easily
+ * Extends the HTTPRequest class
+ * 
+ * @param {Object} options List of options to pass to the class
+ */
+function JSONRequest(options) {
+	// Set the users passed options
+	HTTPRequest.call(this, options);
+}
+
+// Extend the HTTPRequest class
+JSONRequest.prototype = HTTPRequest.prototype;
+
+/**
+ * Handles the response from a HTTP request
+ * This expects JSON and will return the decoded JSON
+ * 
+ * @param {String} response The HTTP response in JSON
+ * @returns {Mixed} The decoded JSON, usually an array or object
+ */
+JSONRequest.prototype.handleResponse = function(response) {
+	// Decode and return the data
+	return JSON.parse(response);
+};
+
+/**
+ * Sends the HTTP request configured in the options object
+ * Will decode the response as JSON
+ * 
+ * @param {Function} callback The function to send the results to if asyncronous
+ * @returns {String} The results will be returned if it is not an asyncronous request
+ */
+JSONRequest.prototype.send = function(callback) {
+	// Initialise variables
+	var self = this;
+	
+	// Perform this differently depending on the async option
+	if(this.options.async) {
+		// Async, use a callback
+		HTTPRequest.prototype.send.call(this, function(response) {
+			// Decode the response and send it to the callback
+			callback.call(null, self.handleResponse(response));
+		});
+	}
+	else {
+		// Non async, so we handle the returned data and pass it to the callback
+		return HTTPRequest.prototype.send.call(this);
+	}
+};/**
+ * GitHub API request class
+ * Extends the JSONRequest class
+ * 
+ * @param {Object} options List of options to pass to the class
+ */
+function APIRequest(options) {
+	// Set the default options
+	this.setOptions({
+		rootUrl: 'https://api.github.com',
+		urlTemplate: null, // Ex: /gists/${gistId}/comments
+		urlData: null // Ex: { gistId: 12345 }
+	});
+	
+	// Set the users passed options
+	JSONRequest.call(this, options);
+}
+
+// Extend the JSONRequest class
+APIRequest.prototype = JSONRequest.prototype;
+
+/**
+ * Compiles the URL components sent in the options object
+ * Stores them back into the options
+ */
+APIRequest.prototype.buildUrl = function() {
+	// Initialise variables
+	var built = this.options.rootUrl + this.options.urlTemplate,
+		urlData = this.options.urlData,
+		i = null;
+	
+	// Compile the template if there is data
+	if(urlData) {
+		for(i in urlData) {
+			if(urlData.hasOwnProperty(i)) {
+				built = built.replace('${' + i + '}', urlData[i]);
+			}
+		}
+	}
+	
+	// Store the built URL
+	this.setOptions({
+		url: built
+	});
+};
+
+/**
+ * Sends the API request configured in the options object
+ * 
+ * @param {Function} callback The function to send the results to if asyncronous
+ * @returns {String} The results will be returned if it is not an asyncronous request
+ */
+APIRequest.prototype.send = function(callback) {
+	// Initialise variables
+	var self = this;
+	
+	// Build the URL
+	this.buildUrl();
+	
+	// Perform this differently depending on the async option
+	if(this.options.async) {
+		// Async, use a callback
+		JSONRequest.prototype.send.call(this, function(response) {
+			// Send the response to the callback
+			callback.call(null, response);
+		});
+	}
+	else {
+		// Non async, return the result
+		return JSONRequest.prototype.send.call(this);
 	}
 };	// Expose the class
 	exports.GitHub = GitHub;
