@@ -3,7 +3,7 @@
  * 
  * @param {Object} options Options to be set
  */
-GitHub.implement('setOptions', function(options) {
+function setOptions(options) {
 	// Initialise any required variables
 	var i = null;
 	
@@ -20,4 +20,7 @@ GitHub.implement('setOptions', function(options) {
 			}
 		}
 	}
-});
+}
+
+// Implement setOptions in the GitHub class
+GitHub.implement('setOptions', setOptions);
