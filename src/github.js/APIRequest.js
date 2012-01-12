@@ -18,6 +18,7 @@ function APIRequest(options) {
 
 // Extend the JSONRequest class
 APIRequest.prototype.setOptions = JSONRequest.prototype.setOptions;
+APIRequest.prototype.handleResponse = JSONRequest.prototype.handleResponse;
 
 /**
  * Compiles the URL components sent in the options object
