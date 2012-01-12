@@ -3,7 +3,10 @@ default: normal minified
 # Set up file lists
 g=src/github.js/
 files=	${g}main.js\
+		\
 		${g}api.js\
+		${g}api/*.js
+		\
 		${g}options.js\
 		\
 		${g}APIRequest/JSONRequest/HTTPRequest.js\
