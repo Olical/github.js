@@ -11,7 +11,7 @@ function JSONRequest(options) {
 }
 
 // Extend the HTTPRequest class
-JSONRequest.prototype = HTTPRequest.prototype;
+JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
 
 /**
  * Handles the response from a HTTP request
