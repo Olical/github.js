@@ -10,7 +10,7 @@ files=	${g}main.js\
 		${g}APIRequest/JSONRequest.js\
 		${g}APIRequest.js\
 		\
-		${g}api/*.js
+		${g}api/*.js\
 		${g}footer.js
 
 normal:
