@@ -7,7 +7,7 @@
 	],
 	"app": {
 		"launch": {
-			"local_path": "test/basic.html"
+			"local_path": "test/index.html"
 		}
 	}
 }
