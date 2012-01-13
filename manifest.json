@@ -1,0 +1,13 @@
+{
+	"name": "github.js tests",
+	"version": "0.0.0",
+	"description": "Used for testing github.js",
+	"permissions": [
+		"https://api.github.com"
+	],
+	"app": {
+		"launch": {
+			"local_path": "test/basic.html"
+		}
+	}
+}
