@@ -9,8 +9,23 @@
 	 * @param {Object} options List of options to pass to the class
 	 */
 	function GitHub(options) {
+		// Initialise variables
+		var i = null,
+			ac = null;
+		
 		// Set any passed options
 		this.setOptions(options);
+		
+		// Initialise the API classes
+		for(i = 0; i < this.apiClasses.length; i += 1) {
+			ac = this.apiClasses[i];
+			
+			// Load the class
+			this[ac.key] = new ac.apiClass;
+			
+			// Pass the instance to it
+			this[ac.key].instance = this;
+		}
 	}/**
  * Add the implement method to the class
  * This is not added in the prototype because it is used during construction
@@ -21,6 +36,23 @@
 GitHub.implement = function(key, value) {
 	// Add the passed value to the prototype
 	this.prototype[key] = value;
+};
+
+// Set up the API class storage array
+GitHub.prototype.apiClasses = [];
+
+/**
+ * Registers an API to be loaded on instance creation
+ * 
+ * @param {String} key The key to store it under
+ * @param {Function} apiClass Class to store the instance of
+ */
+GitHub.registerApi = function(key, apiClass) {
+	// Register the API
+	this.prototype.apiClasses.push({
+		key: key,
+		apiClass: apiClass
+	});
 };/**
  * Stores options into the GitHub class instance
  * 
@@ -276,15 +308,28 @@ GitHub.implement('get', function(requestOptions, callback) {
 	else {
 		return request.send();
 	}
-});GitHub.implement('gists', {
-	getFromUser: function(user, callback) {
-		return this.get({
-			urlTemplate: '/users/${user}/gists',
-			urlData: {
-				user: user
-			}
-		}, callback);
-	}
-});	// Expose the class
+});/**
+ * API class for interacting with GitHub gists
+ */
+function gistsApi() {}
+
+/**
+ * Retrieves a users gists
+ * 
+ * @param {String} user The user to get the gists from
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getFromUser = function(user, callback) {
+	return this.instance.get({
+		urlTemplate: '/users/${user}/gists',
+		urlData: {
+			user: user
+		}
+	}, callback);
+};
+
+// Register the API
+GitHub.registerApi('gists', gistsApi);	// Expose the class
 	exports.GitHub = GitHub;
 }(this));
