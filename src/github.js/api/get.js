@@ -6,7 +6,7 @@
  * @param {Function} callback Where to pass the results to, optional
  * @returns {Mixed} The decoded JSON results from the request
  */
-function get(requestOptions, apiOptions, callback) {
+GitHub.implement('get', function(requestOptions, apiOptions, callback) {
 	// Set up the request
 	var request = new APIRequest({
 		async: (callback) ? true : false
@@ -27,7 +27,4 @@ function get(requestOptions, apiOptions, callback) {
 	else {
 		return request.send();
 	}
-}
-
-// Expose the get function in the API
-GitHub.implement('get', get);
+});
