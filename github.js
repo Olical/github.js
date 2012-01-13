@@ -314,6 +314,18 @@ GitHub.implement('get', function(requestOptions, callback) {
 function gistsApi() {}
 
 /**
+ * Lists either all public gists or the gists of the authenticated user
+ * 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.get = function(callback) {
+	return this.instance.get({
+		urlTemplate: '/gists'
+	}, callback);
+};
+
+/**
  * Retrieves a users gists
  * 
  * @param {String} user The user to get the gists from
