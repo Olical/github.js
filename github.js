@@ -250,15 +250,15 @@ GitHub.implement('deAuthenticate', function() {
  * Makes a request using the APIRequest class
  * 
  * @param {Object} requestOptions Options object for the HTTPRequest
- * @param {Object} apiObject Options that are indirectly passed to the HTTPRequest, should contain user and password if required
  * @param {Function} callback Where to pass the results to, optional
  * @returns {Mixed} The decoded JSON results from the request
  */
-function get(requestOptions, apiOptions, callback) {
-	// Set up the request
-	var request = new APIRequest({
-		async: (callback) ? true : false
-	});
+GitHub.implement('get', function(requestOptions, callback) {
+	// Set up the request and initialise variables
+	var apiOptions = this.options,
+		request = new APIRequest({
+			async: (callback) ? true : false
+		});
 	
 	request.setOptions(requestOptions);
 	
@@ -269,31 +269,21 @@ function get(requestOptions, apiOptions, callback) {
 		});
 	}
 	
+	// Send the request
 	if(callback) {
 		request.send(callback);
 	}
 	else {
 		return request.send();
 	}
-}
-
-// Expose the get function in the API
-GitHub.implement('get', get);GitHub.implement('gists', {
+});GitHub.implement('gists', {
 	getFromUser: function(user, callback) {
-		var request = new APIRequest({
+		return this.get({
 			urlTemplate: '/users/${user}/gists',
 			urlData: {
 				user: user
-			},
-			async: (callback) ? true : false
-		});
-		
-		if(callback) {
-			request.send(callback);
-		}
-		else {
-			return request.send();
-		}
+			}
+		}, callback);
 	}
 });	// Expose the class
 	exports.GitHub = GitHub;
