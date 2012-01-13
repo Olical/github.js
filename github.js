@@ -81,10 +81,14 @@ HTTPRequest.prototype.setOptions = setOptions;
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 HTTPRequest.prototype.send = function(callback) {
-	// TODO Implement authorisation
 	// Initialise the request
 	var request = new XMLHttpRequest();
 	request.open(this.options.method, this.options.url, this.options.async);
+	
+	// Authenticate if required
+	if(this.options.user && this.options.password) {
+		request.setRequestHeader('Authorization', 'Basic ' + btoa(this.options.user + ':' + this.options.password));
+	}
 	
 	if(this.options.async && callback) {
 		// Add the event listeners
@@ -226,8 +230,56 @@ APIRequest.prototype.send = function(callback) {
 		// Non async, return the result
 		return JSONRequest.prototype.send.call(this);
 	}
-};GitHub.implement('gists', {
-	getGists: function(user, callback) {
+};GitHub.implement('authenticate', function(user, password) {
+	// Store the passed user and password
+	// It will be used when a request is made
+	this.setOptions({
+		user: user,
+		password: password
+	});
+});
+
+GitHub.implement('deAuthenticate', function() {
+	// Clear the authentication
+	this.setOptions({
+		user: null,
+		password: null
+	});
+});
+/**
+ * Makes a request using the APIRequest class
+ * 
+ * @param {Object} requestOptions Options object for the HTTPRequest
+ * @param {Object} apiObject Options that are indirectly passed to the HTTPRequest, should contain user and password if required
+ * @param {Function} callback Where to pass the results to, optional
+ * @returns {Mixed} The decoded JSON results from the request
+ */
+function get(requestOptions, apiOptions, callback) {
+	// Set up the request
+	var request = new APIRequest({
+		async: (callback) ? true : false
+	});
+	
+	request.setOptions(requestOptions);
+	
+	if(apiOptions.user && apiOptions.password) {
+		request.setOptions({
+			user: apiOptions.user,
+			password: apiOptions.password
+		});
+	}
+	
+	if(callback) {
+		request.send(callback);
+	}
+	else {
+		return request.send();
+	}
+}
+
+// Expose the get function in the API
+GitHub.implement('get', get);GitHub.implement('gists', {
+	getFromUser: function(user, callback) {
 		var request = new APIRequest({
 			urlTemplate: '/users/${user}/gists',
 			urlData: {
@@ -243,7 +295,6 @@ APIRequest.prototype.send = function(callback) {
 			return request.send();
 		}
 	}
-});
-	// Expose the class
+});	// Expose the class
 	exports.GitHub = GitHub;
 }(this));
