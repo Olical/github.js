@@ -46,6 +46,6 @@ JSONRequest.prototype.send = function(callback) {
 	}
 	else {
 		// Non async, so we handle the returned data and pass it to the callback
-		return HTTPRequest.prototype.send.call(this);
+		return self.handleResponse(HTTPRequest.prototype.send.call(this));
 	}
 };
