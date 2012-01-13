@@ -21,6 +21,7 @@ GitHub.implement('get', function(requestOptions, apiOptions, callback) {
 		});
 	}
 	
+	// Send the request
 	if(callback) {
 		request.send(callback);
 	}
