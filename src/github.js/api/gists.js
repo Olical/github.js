@@ -28,6 +28,18 @@ gistsApi.prototype.getPublic = function(callback) {
 };
 
 /**
+ * Lists the authenticated users starred gists
+ * 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getStarred = function(callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/starred'
+	}, callback);
+};
+
+/**
  * Retrieves a users gists
  * 
  * @param {String} user The user to get the gists from
