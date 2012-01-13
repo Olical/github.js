@@ -9,4 +9,5 @@ test('Gists', function() {
 	// Authenticated calls
 	client.authenticate(user, password);
 	equals(typeof client.gists.getStarred().length, 'number', 'Getting the authenticated users starred gists');
+	equals(typeof client.gists.get().length, 'number', 'Getting the authenticated users gists');
 });
