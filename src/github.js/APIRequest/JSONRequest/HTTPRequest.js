@@ -33,10 +33,14 @@ HTTPRequest.prototype.setOptions = setOptions;
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 HTTPRequest.prototype.send = function(callback) {
-	// TODO Implement authorisation
 	// Initialise the request
 	var request = new XMLHttpRequest();
 	request.open(this.options.method, this.options.url, this.options.async);
+	
+	// Authenticate if required
+	if(this.options.user && this.options.password) {
+		request.setRequestHeader('Authorization', 'Basic ' + btoa(this.options.user + ':' + this.options.password));
+	}
 	
 	if(this.options.async && callback) {
 		// Add the event listeners
