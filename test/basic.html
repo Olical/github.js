@@ -6,7 +6,7 @@
 		<script type='text/javascript'>
 			var client = new GitHub();
 			console.log('Gists:');
-			client.gists.getGists('Wolfy87', function(gists) {
+			client.gists.getFromUser('Wolfy87', function(gists) {
 				console.log(gists);
 			});
 		</script>

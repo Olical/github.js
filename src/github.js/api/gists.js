@@ -1,5 +1,5 @@
 GitHub.implement('gists', {
-	getGists: function(user, callback) {
+	getFromUser: function(user, callback) {
 		var request = new APIRequest({
 			urlTemplate: '/users/${user}/gists',
 			urlData: {
