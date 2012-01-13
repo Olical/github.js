@@ -8,4 +8,9 @@
 GitHub.implement = function(key, value) {
 	// Add the passed value to the prototype
 	this.prototype[key] = value;
+	
+	// If the value is an object we need to expose the instance
+	if(typeof value === 'object') {
+		this.prototype[key].instance = this;
+	}
 };
