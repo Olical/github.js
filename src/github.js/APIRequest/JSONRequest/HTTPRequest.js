@@ -54,7 +54,7 @@ HTTPRequest.prototype.send = function(callback) {
 	}
 	
 	// Send the request
-	request.send(this.options.data);
+	request.send(JSON.stringify(this.options.data));
 	
 	// If it is not an async request, send back the results instantly
 	if(!this.options.async) {
