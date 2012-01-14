@@ -344,6 +344,42 @@ gistsApi.prototype.create = function(settings, callback) {
 };
 
 /**
+ * Edits the specified gist
+ * The settings object is the same one as used in the create method
+ * 
+ * 	{
+ * 		description: 'Gists new description',
+ * 		'public': true,
+ * 		files: {
+ * 			'files-new-name.txt': {
+ * 				content: 'Files new content'
+ * 			},
+ * 			'old-file-to-delete.txt': {
+ * 				content: null
+ * 			}
+ * 		}
+ * 	}
+ * 
+ * The public attribute must be wrapped in quotes because it is a reserved word in JavaScript
+ * To delete a file, pass null as its content
+ * 
+ * @param {Number} id The ID of the gist to edit
+ * @param {Object} settings The settings in the layout described above
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.edit = function(id, settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'PATCH',
+		data: settings
+	}, callback);
+};
+
+/**
  * Lists either all public gists or the gists of the authenticated user
  * 
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
