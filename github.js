@@ -134,7 +134,7 @@ HTTPRequest.prototype.send = function(callback) {
 	}
 	
 	// Send the request
-	request.send(this.options.data);
+	request.send(JSON.stringify(this.options.data));
 	
 	// If it is not an async request, send back the results instantly
 	if(!this.options.async) {
@@ -312,6 +312,36 @@ GitHub.implement('get', function(requestOptions, callback) {
  * API class for interacting with GitHub gists
  */
 function gistsApi() {}
+
+/**
+ * Creates a gist with the data you provide
+ * The settings object can contain a description, public flag and file list
+ * All parameters are required apart from the description
+ * The object should look like this
+ * 
+ * 	{
+ * 		description: 'Gists description',
+ * 		'public': true,
+ * 		files: {
+ * 			'files-name.txt': {
+ * 				content: 'Files content'
+ * 			}
+ * 		}
+ * 	}
+ * 
+ * The public attribute must be wrapped in quotes because it is a reserved word in JavaScript
+ * 
+ * @param {Object} settings The settings in the layout described above
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.create = function(settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists',
+		method: 'POST',
+		data: settings
+	}, callback);
+};
 
 /**
  * Lists either all public gists or the gists of the authenticated user

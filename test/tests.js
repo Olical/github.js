@@ -11,4 +11,13 @@ test('Gists', function() {
 	client.authenticate(user, password);
 	equals(typeof client.gists.getStarred().length, 'number', 'Getting the authenticated users starred gists');
 	equals(typeof client.gists.get().length, 'number', 'Getting the authenticated users gists');
+	equals(client.gists.create({
+		description: 'API test',
+		'public': false,
+		files: {
+			'file1.txt': {
+				content: 'Hello, World!'
+			}
+		}
+	}).description, 'API test', 'Creating a gist');
 });
