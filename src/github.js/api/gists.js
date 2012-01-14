@@ -70,6 +70,23 @@ gistsApi.prototype.edit = function(id, settings, callback) {
 };
 
 /**
+ * Deletes the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to delete
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.remove = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+/**
  * Lists either all public gists or the gists of the authenticated user
  * 
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
