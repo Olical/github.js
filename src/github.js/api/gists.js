@@ -55,5 +55,21 @@ gistsApi.prototype.getFromUser = function(user, callback) {
 	}, callback);
 };
 
+/**
+ * Retrieves the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to get
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getById = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
 // Register the API
 GitHub.registerApi('gists', gistsApi);

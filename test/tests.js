@@ -5,6 +5,7 @@ test('Gists', function() {
 	equals(client.gists.getFromUser('Wolfy87')[0].user.login, 'Wolfy87', 'Getting a users gists');
 	equals(client.gists.get().length, 30, 'Getting all public gists, would be the users gists if authenticated');
 	equals(client.gists.getPublic().length, 30, 'Getting all public gists using the full URL');
+	equals(client.gists.getById(1).description, 'the meaning of gist', 'Getting a gist by ID');
 	
 	// Authenticated calls
 	client.authenticate(user, password);
