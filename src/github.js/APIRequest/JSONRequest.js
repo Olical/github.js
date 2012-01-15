@@ -12,6 +12,7 @@ function JSONRequest(options) {
 
 // Extend the HTTPRequest class
 JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
+JSONRequest.prototype.handleStatus = HTTPRequest.prototype.handleStatus;
 
 /**
  * Handles the response from a HTTP request
@@ -21,8 +22,15 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  * @returns {Mixed} The decoded JSON, usually an array or object
  */
 JSONRequest.prototype.handleResponse = function(response) {
-	// Decode and return the data
-	return JSON.parse(response);
+	// Make sure we have a response
+	if(typeof response === 'string' && response) {
+		// Decode and return the data
+		return JSON.parse(response);
+	}
+	else {
+		// Response is not a string, just return it
+		return response;
+	}
 };
 
 /**
@@ -46,6 +54,6 @@ JSONRequest.prototype.send = function(callback) {
 	}
 	else {
 		// Non async, so we handle the returned data and pass it to the callback
-		return HTTPRequest.prototype.send.call(this);
+		return self.handleResponse(HTTPRequest.prototype.send.call(this));
 	}
 };

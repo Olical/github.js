@@ -1,5 +1,5 @@
 /**
- * GitHub JavaScript API v0.0.0
+ * GitHub JavaScript API v0.0.1
  * https://github.com/Wolfy87/github.js
  */
 (function(exports) {
@@ -9,8 +9,23 @@
 	 * @param {Object} options List of options to pass to the class
 	 */
 	function GitHub(options) {
+		// Initialise variables
+		var i = null,
+			ac = null;
+		
 		// Set any passed options
 		this.setOptions(options);
+		
+		// Initialise the API classes
+		for(i = 0; i < this.apiClasses.length; i += 1) {
+			ac = this.apiClasses[i];
+			
+			// Load the class
+			this[ac.key] = new ac.apiClass;
+			
+			// Pass the instance to it
+			this[ac.key].instance = this;
+		}
 	}/**
  * Add the implement method to the class
  * This is not added in the prototype because it is used during construction
@@ -21,6 +36,23 @@
 GitHub.implement = function(key, value) {
 	// Add the passed value to the prototype
 	this.prototype[key] = value;
+};
+
+// Set up the API class storage array
+GitHub.prototype.apiClasses = [];
+
+/**
+ * Registers an API to be loaded on instance creation
+ * 
+ * @param {String} key The key to store it under
+ * @param {Function} apiClass Class to store the instance of
+ */
+GitHub.registerApi = function(key, apiClass) {
+	// Register the API
+	this.prototype.apiClasses.push({
+		key: key,
+		apiClass: apiClass
+	});
 };/**
  * Stores options into the GitHub class instance
  * 
@@ -75,34 +107,65 @@ function HTTPRequest(options) {
 HTTPRequest.prototype.setOptions = setOptions;
 
 /**
+ * Handles a requests response and status code
+ * Will return either the response, true or false
+ * 
+ * @param {Object} request The request object
+ * @returns {Mixed} Either the response text or a boolean
+ */
+HTTPRequest.prototype.handleStatus = function(request) {
+	// Handle different status codes
+	if(request.status >= 200 && request.status < 400) {
+		// Return the data
+		// If there is no data, return true
+		if(request.responseText) {
+			return request.responseText;
+		}
+		else {
+			return true;
+		}
+	}
+	else {
+		// The request did not come back well
+		// Return false back
+		// This could be a gist starred check in which case a 404 means it is not starred
+		return false;
+	}
+};
+
+/**
  * Sends the HTTP request configured in the options object
  * 
  * @param {Function} callback The function to send the results to if asyncronous
  * @returns {String} The results will be returned if it is not an asyncronous request
  */
 HTTPRequest.prototype.send = function(callback) {
-	// TODO Implement authorisation
 	// Initialise the request
 	var request = new XMLHttpRequest();
 	request.open(this.options.method, this.options.url, this.options.async);
+	
+	// Authenticate if required
+	if(this.options.user && this.options.password) {
+		request.setRequestHeader('Authorization', 'Basic ' + btoa(this.options.user + ':' + this.options.password));
+	}
 	
 	if(this.options.async && callback) {
 		// Add the event listeners
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
-			if(request.readyState === 4 && request.status === 200) {
-				// It is, send the data to the callback
-				callback.call(null, request.responseText);
+			if(request.readyState === 4) {
+				// Send the response to the callback
+				callback.call(null, this.handleStatus(request));
 			}
 		});
 	}
 	
 	// Send the request
-	request.send(this.options.data);
+	request.send(JSON.stringify(this.options.data));
 	
 	// If it is not an async request, send back the results instantly
 	if(!this.options.async) {
-		return request.responseText;
+		return this.handleStatus(request);
 	}
 };/**
  * JSON request class
@@ -118,6 +181,7 @@ function JSONRequest(options) {
 
 // Extend the HTTPRequest class
 JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
+JSONRequest.prototype.handleStatus = HTTPRequest.prototype.handleStatus;
 
 /**
  * Handles the response from a HTTP request
@@ -127,8 +191,15 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  * @returns {Mixed} The decoded JSON, usually an array or object
  */
 JSONRequest.prototype.handleResponse = function(response) {
-	// Decode and return the data
-	return JSON.parse(response);
+	// Make sure we have a response
+	if(typeof response === 'string' && response) {
+		// Decode and return the data
+		return JSON.parse(response);
+	}
+	else {
+		// Response is not a string, just return it
+		return response;
+	}
 };
 
 /**
@@ -152,7 +223,7 @@ JSONRequest.prototype.send = function(callback) {
 	}
 	else {
 		// Non async, so we handle the returned data and pass it to the callback
-		return HTTPRequest.prototype.send.call(this);
+		return self.handleResponse(HTTPRequest.prototype.send.call(this));
 	}
 };/**
  * GitHub API request class
@@ -175,6 +246,7 @@ function APIRequest(options) {
 // Extend the JSONRequest class
 APIRequest.prototype.setOptions = JSONRequest.prototype.setOptions;
 APIRequest.prototype.handleResponse = JSONRequest.prototype.handleResponse;
+APIRequest.prototype.handleStatus = JSONRequest.prototype.handleStatus;
 
 /**
  * Compiles the URL components sent in the options object
@@ -226,24 +298,367 @@ APIRequest.prototype.send = function(callback) {
 		// Non async, return the result
 		return JSONRequest.prototype.send.call(this);
 	}
-};GitHub.implement('gists', {
-	getGists: function(user, callback) {
-		var request = new APIRequest({
-			urlTemplate: '/users/${user}/gists',
-			urlData: {
-				user: user
-			},
+};GitHub.implement('authenticate', function(user, password) {
+	// Store the passed user and password
+	// It will be used when a request is made
+	this.setOptions({
+		user: user,
+		password: password
+	});
+});
+
+GitHub.implement('deAuthenticate', function() {
+	// Clear the authentication
+	this.setOptions({
+		user: null,
+		password: null
+	});
+});
+/**
+ * Makes a request using the APIRequest class
+ * 
+ * @param {Object} requestOptions Options object for the HTTPRequest
+ * @param {Function} callback Where to pass the results to, optional
+ * @returns {Mixed} The decoded JSON results from the request
+ */
+GitHub.implement('get', function(requestOptions, callback) {
+	// Set up the request and initialise variables
+	var apiOptions = this.options,
+		request = new APIRequest({
 			async: (callback) ? true : false
 		});
-		
-		if(callback) {
-			request.send(callback);
-		}
-		else {
-			return request.send();
-		}
+	
+	request.setOptions(requestOptions);
+	
+	if(apiOptions.user && apiOptions.password) {
+		request.setOptions({
+			user: apiOptions.user,
+			password: apiOptions.password
+		});
 	}
-});
-	// Expose the class
+	
+	// Send the request
+	if(callback) {
+		request.send(callback);
+	}
+	else {
+		return request.send();
+	}
+});/**
+ * API class for interacting with GitHub gists
+ */
+function gistsApi() {}
+
+/**
+ * Creates a gist with the data you provide
+ * The settings object can contain a description, public flag and file list
+ * All parameters are required apart from the description
+ * The object should look like this
+ * 
+ * 	{
+ * 		description: 'Gists description',
+ * 		'public': true,
+ * 		files: {
+ * 			'files-name.txt': {
+ * 				content: 'Files content'
+ * 			}
+ * 		}
+ * 	}
+ * 
+ * The public attribute must be wrapped in quotes because it is a reserved word in JavaScript
+ * 
+ * @param {Object} settings The settings in the layout described above
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.create = function(settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists',
+		method: 'POST',
+		data: settings
+	}, callback);
+};
+
+/**
+ * Edits the specified gist
+ * The settings object is the same one as used in the create method
+ * 
+ * 	{
+ * 		description: 'Gists new description',
+ * 		'public': true,
+ * 		files: {
+ * 			'files-new-name.txt': {
+ * 				content: 'Files new content'
+ * 			},
+ * 			'old-file-to-delete.txt': {
+ * 				content: null
+ * 			}
+ * 		}
+ * 	}
+ * 
+ * The public attribute must be wrapped in quotes because it is a reserved word in JavaScript
+ * To delete a file, pass null as its content
+ * 
+ * @param {Number} id The ID of the gist to edit
+ * @param {Object} settings The settings in the layout described above
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.edit = function(id, settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'PATCH',
+		data: settings
+	}, callback);
+};
+
+/**
+ * Deletes the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to delete
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.remove = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+/**
+ * Lists either all public gists or the gists of the authenticated user
+ * 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.get = function(callback) {
+	return this.instance.get({
+		urlTemplate: '/gists'
+	}, callback);
+};
+
+/**
+ * Lists public gists
+ * 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getPublic = function(callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/public'
+	}, callback);
+};
+
+/**
+ * Lists the authenticated users starred gists
+ * 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getStarred = function(callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/starred'
+	}, callback);
+};
+
+/**
+ * Retrieves a users gists
+ * 
+ * @param {String} user The user to get the gists from
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getFromUser = function(user, callback) {
+	return this.instance.get({
+		urlTemplate: '/users/${user}/gists',
+		urlData: {
+			user: user
+		}
+	}, callback);
+};
+
+/**
+ * Retrieves the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to get
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getById = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Forks the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to fork
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.fork = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/fork',
+		urlData: {
+			id: id
+		},
+		method: 'POST'
+	}, callback);
+};
+
+/**
+ * Stars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to star
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.star = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'PUT'
+	}, callback);
+};
+
+/**
+ * Unstars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to unstar
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.unstar = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+/**
+ * Checks if the gist that matches the passed ID is starred
+ * 
+ * @param {Number} id The ID of the gist to check
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.starred = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Gets comments for a gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to get comments from
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getComments = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/comments',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Gets a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to get
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getComment = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Adds a comment to the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to comment on
+ * @param {String} content The content of your comment
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.comment = function(id, content, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/comments',
+		urlData: {
+			id: id
+		},
+		data: {
+			body: content
+		},
+		method: 'POST'
+	}, callback);
+};
+
+/**
+ * Edits a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to edit
+ * @param {String} content The new content of your comment
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.editComment = function(id, content, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		},
+		data: {
+			body: content
+		},
+		method: 'PATCH'
+	}, callback);
+};
+
+/**
+ * Deletes a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to delete
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.removeComment = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+// Register the API
+GitHub.registerApi('gists', gistsApi);	// Expose the class
 	exports.GitHub = GitHub;
 }(this));
