@@ -30,5 +30,13 @@ test('Gists', function() {
 	equals(client.gists.starred(result.id), false, 'Checking an unstarred gist for a star');
 	equals(client.gists.star(result.id), true, 'Starring a gist');
 	equals(client.gists.starred(result.id), true, 'Checking an starred gist for a star');
+	equals(client.gists.comment(result.id, 'Comment test').body, 'Comment test', 'Adding a comment');
+	
+	comments = client.gists.getComments(result.id);
+	
+	equals(comments[0].body, 'Comment test', 'Getting all comments');
+	equals(client.gists.editComment(comments[0].id, 'Comment test - edited').body, 'Comment test - edited', 'Editing a comment');
+	equals(client.gists.getComment(comments[0].id).body, 'Comment test - edited', 'Getting a single comment');
+	equals(client.gists.removeComment(comments[0].id), true, 'Deleting a comment');
 	equals(client.gists.remove(result.id), true, 'Deleting a gist');
 });
