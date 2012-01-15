@@ -21,8 +21,15 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  * @returns {Mixed} The decoded JSON, usually an array or object
  */
 JSONRequest.prototype.handleResponse = function(response) {
-	// Decode and return the data
-	return JSON.parse(response);
+	// Make sure we have a response
+	if(response) {
+		// Decode and return the data
+		return JSON.parse(response);
+	}
+	else {
+		// No response, return true
+		return true;
+	}
 };
 
 /**
