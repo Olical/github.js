@@ -18,7 +18,6 @@ My aim is to cover the **whole API**. This is the current status.
  * none - Repositories
  * none - Users
  * none - Events
- 
 
 # Testing
 
