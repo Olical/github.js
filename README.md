@@ -6,6 +6,20 @@ Frontend JavaScript library for interacting with the GitHub API v3.
 
 There are **no dependencies** in the front end. You must have [node.js](http://nodejs.org/), [UglifyJS](https://github.com/mishoo/UglifyJS) and [make](http://www.gnu.org/software/make/) to build the code. You can build the code by runnin `make` from your terminal.
 
+# API support
+
+My aim is to cover the **whole API**. This is the current status.
+
+ * full - Gists
+ * none - Git data
+ * none - Issues
+ * none - Organisations
+ * none - Pull requests
+ * none - Repositories
+ * none - Users
+ * none - Events
+ 
+
 # Testing
 
 The tests are pretty heavy. They should be run from inside the Chrome app or similar method to allow XHR. Please create `./test/auth.js` containing your GitHub login details before running. It should look like this.
