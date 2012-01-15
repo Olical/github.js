@@ -1,4 +1,4 @@
-default: normal minified
+default: normal minified documentation
 
 # Set up file lists
 g=src/github.js/
@@ -18,3 +18,6 @@ normal:
 
 minified:
 	uglifyjs -o github.min.js github.js
+
+documentation:
+	docco github.js
