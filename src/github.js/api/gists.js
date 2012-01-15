@@ -171,5 +171,55 @@ gistsApi.prototype.fork = function(id, callback) {
 	}, callback);
 };
 
+/**
+ * Stars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to star
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.addStar = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'PUT'
+	}, callback);
+};
+
+/**
+ * Unstars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to unstar
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.removeStar = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+/**
+ * Checks if the gist that matches the passed ID is starred
+ * 
+ * @param {Number} id The ID of the gist to check
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.starred = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
 // Register the API
 GitHub.registerApi('gists', gistsApi);
