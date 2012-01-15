@@ -221,5 +221,96 @@ gistsApi.prototype.starred = function(id, callback) {
 	}, callback);
 };
 
+/**
+ * Gets comments for a gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to get comments from
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getComments = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/comments',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Gets a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to get
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.getComment = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		}
+	}, callback);
+};
+
+/**
+ * Adds a comment to the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to comment on
+ * @param {String} content The content of your comment
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.comment = function(id, content, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/comments',
+		urlData: {
+			id: id
+		},
+		data: {
+			body: content
+		},
+		method: 'POST'
+	}, callback);
+};
+
+/**
+ * Edits a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to edit
+ * @param {String} content The new content of your comment
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.editComment = function(id, content, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		},
+		data: {
+			body: content
+		},
+		method: 'PATCH'
+	}, callback);
+};
+
+/**
+ * Deletes a comment from a gist
+ * 
+ * @param {Number} id The ID of the comment to delete
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.removeComment = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/comments/${id}',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
 // Register the API
 GitHub.registerApi('gists', gistsApi);
