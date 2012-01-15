@@ -27,8 +27,8 @@ test('Gists', function() {
 	equals(client.gists.edit(result.id, {
 		description: 'API test - edited'
 	}).description, 'API test - edited', 'Editing a gist');
+	equals(client.gists.starred(result.id), false, 'Checking an unstarred gist for a star');
+	equals(client.gists.star(result.id), true, 'Starring a gist');
+	equals(client.gists.starred(result.id), true, 'Checking an starred gist for a star');
 	equals(client.gists.remove(result.id), true, 'Deleting a gist');
-	result2 = client.gists.fork(1);
-	equals(result2.description, 'the meaning of gist', 'Forking a gist');
-	equals(client.gists.remove(result2.id), true, 'Deleting a forked gist');
 });

@@ -27,6 +27,33 @@ function HTTPRequest(options) {
 HTTPRequest.prototype.setOptions = setOptions;
 
 /**
+ * Handles a requests response and status code
+ * Will return either the response, true or false
+ * 
+ * @param {Object} request The request object
+ * @returns {Mixed} Either the response text or a boolean
+ */
+HTTPRequest.prototype.handleStatus = function(request) {
+	// Handle different status codes
+	if(request.status >= 200 && request.status < 400) {
+		// Return the data
+		// If there is no data, return true
+		if(request.responseText) {
+			return request.responseText;
+		}
+		else {
+			return true;
+		}
+	}
+	else {
+		// The request did not come back well
+		// Return false back
+		// This could be a gist starred check in which case a 404 means it is not starred
+		return false;
+	}
+};
+
+/**
  * Sends the HTTP request configured in the options object
  * 
  * @param {Function} callback The function to send the results to if asyncronous
@@ -47,18 +74,8 @@ HTTPRequest.prototype.send = function(callback) {
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
 			if(request.readyState === 4) {
-				// Handle different status codes
-				if(request.status >= 200 && request.status < 300) {
-					// Send the data to the callback
-					// If there is no data, pass true
-					callback.call(null, request.responseText || true);
-				}
-				else {
-					// The request did not come back well
-					// Pass false back
-					// This could be a gist starred check in which case a 404 means it is not starred
-					callback.call(null, false);
-				}
+				// Send the response to the callback
+				callback.call(null, this.handleStatus(request));
 			}
 		});
 	}
@@ -68,6 +85,6 @@ HTTPRequest.prototype.send = function(callback) {
 	
 	// If it is not an async request, send back the results instantly
 	if(!this.options.async) {
-		return request.responseText;
+		return this.handleStatus(request);
 	}
 };

@@ -12,6 +12,7 @@ function JSONRequest(options) {
 
 // Extend the HTTPRequest class
 JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
+JSONRequest.prototype.handleStatus = HTTPRequest.prototype.handleStatus;
 
 /**
  * Handles the response from a HTTP request
@@ -22,7 +23,7 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  */
 JSONRequest.prototype.handleResponse = function(response) {
 	// Make sure we have a response
-	if(typeof response === 'string') {
+	if(typeof response === 'string' && response) {
 		// Decode and return the data
 		return JSON.parse(response);
 	}
