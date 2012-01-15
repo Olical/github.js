@@ -505,7 +505,7 @@ gistsApi.prototype.fork = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.addStar = function(id, callback) {
+gistsApi.prototype.star = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/star',
 		urlData: {
@@ -522,7 +522,7 @@ gistsApi.prototype.addStar = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.removeStar = function(id, callback) {
+gistsApi.prototype.unstar = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/star',
 		urlData: {
