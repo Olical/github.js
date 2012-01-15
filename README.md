@@ -15,6 +15,8 @@ The tests are pretty heavy. They should be run from inside the Chrome app or sim
 
 When you are all set up, just load `./test/index.html` to run the automated tests.
 
+Testing is currently only performed in modern browsers such as Google Chrome and Firefox. Older browser support will come later.
+
 # Licence
 
 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">github.js</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://olivercaldwell.co.uk/" property="cc:attributionName" rel="cc:attributionURL">Oliver Caldwell</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>.
