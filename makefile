@@ -1,4 +1,4 @@
-default: normal minified documentation
+default: normal minified
 
 # Set up file lists
 g=src/github.js/
