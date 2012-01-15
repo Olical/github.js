@@ -47,8 +47,18 @@ HTTPRequest.prototype.send = function(callback) {
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
 			if(request.readyState === 4) {
-				// It is, send the data to the callback
-				callback.call(null, request.responseText);
+				// Handle different status codes
+				if(request.status >= 200 && request.status < 300) {
+					// Send the data to the callback
+					// If there is no data, pass true
+					callback.call(null, request.responseText || true);
+				}
+				else {
+					// The request did not come back well
+					// Pass false back
+					// This could be a gist starred check in which case a 404 means it is not starred
+					callback.call(null, false);
+				}
 			}
 		});
 	}

@@ -22,13 +22,13 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  */
 JSONRequest.prototype.handleResponse = function(response) {
 	// Make sure we have a response
-	if(response) {
+	if(typeof response === 'string') {
 		// Decode and return the data
 		return JSON.parse(response);
 	}
 	else {
-		// No response, return true
-		return true;
+		// Response is not a string, just return it
+		return response;
 	}
 };
 
