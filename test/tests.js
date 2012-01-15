@@ -28,4 +28,7 @@ test('Gists', function() {
 		description: 'API test - edited'
 	}).description, 'API test - edited', 'Editing a gist');
 	equals(client.gists.remove(result.id), true, 'Deleting a gist');
+	result2 = client.gists.fork(1);
+	equals(result2.description, 'the meaning of gist', 'Forking a gist');
+	equals(client.gists.remove(result2.id), true, 'Deleting a forked gist');
 });

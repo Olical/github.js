@@ -471,6 +471,23 @@ gistsApi.prototype.getById = function(id, callback) {
 	}, callback);
 };
 
+/**
+ * Forks the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to fork
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.fork = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/fork',
+		urlData: {
+			id: id
+		},
+		method: 'POST'
+	}, callback);
+};
+
 // Register the API
 GitHub.registerApi('gists', gistsApi);	// Expose the class
 	exports.GitHub = GitHub;
