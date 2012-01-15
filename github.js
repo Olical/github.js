@@ -126,7 +126,7 @@ HTTPRequest.prototype.send = function(callback) {
 		// Add the event listeners
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
-			if(request.readyState === 4 && request.status === 200) {
+			if(request.readyState === 4) {
 				// It is, send the data to the callback
 				callback.call(null, request.responseText);
 			}
@@ -163,8 +163,15 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  * @returns {Mixed} The decoded JSON, usually an array or object
  */
 JSONRequest.prototype.handleResponse = function(response) {
-	// Decode and return the data
-	return JSON.parse(response);
+	// Make sure we have a response
+	if(response) {
+		// Decode and return the data
+		return JSON.parse(response);
+	}
+	else {
+		// No response, return true
+		return true;
+	}
 };
 
 /**

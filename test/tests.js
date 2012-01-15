@@ -24,8 +24,8 @@ test('Gists', function() {
 	});
 	
 	equals(result.description, 'API test', 'Creating a gist');
-	
 	equals(client.gists.edit(result.id, {
 		description: 'API test - edited'
 	}).description, 'API test - edited', 'Editing a gist');
+	equals(client.gists.remove(result.id), true, 'Deleting a gist');
 });
