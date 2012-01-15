@@ -127,8 +127,18 @@ HTTPRequest.prototype.send = function(callback) {
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
 			if(request.readyState === 4) {
-				// It is, send the data to the callback
-				callback.call(null, request.responseText);
+				// Handle different status codes
+				if(request.status >= 200 && request.status < 300) {
+					// Send the data to the callback
+					// If there is no data, pass true
+					callback.call(null, request.responseText || true);
+				}
+				else {
+					// The request did not come back well
+					// Pass false back
+					// This could be a gist starred check in which case a 404 means it is not starred
+					callback.call(null, false);
+				}
 			}
 		});
 	}
@@ -164,13 +174,13 @@ JSONRequest.prototype.setOptions = HTTPRequest.prototype.setOptions;
  */
 JSONRequest.prototype.handleResponse = function(response) {
 	// Make sure we have a response
-	if(response) {
+	if(typeof response === 'string') {
 		// Decode and return the data
 		return JSON.parse(response);
 	}
 	else {
-		// No response, return true
-		return true;
+		// Response is not a string, just return it
+		return response;
 	}
 };
 
@@ -485,6 +495,56 @@ gistsApi.prototype.fork = function(id, callback) {
 			id: id
 		},
 		method: 'POST'
+	}, callback);
+};
+
+/**
+ * Stars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to star
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.addStar = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'PUT'
+	}, callback);
+};
+
+/**
+ * Unstars the gist that matches the passed ID
+ * 
+ * @param {Number} id The ID of the gist to unstar
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.removeStar = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		},
+		method: 'DELETE'
+	}, callback);
+};
+
+/**
+ * Checks if the gist that matches the passed ID is starred
+ * 
+ * @param {Number} id The ID of the gist to check
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gistsApi.prototype.starred = function(id, callback) {
+	return this.instance.get({
+		urlTemplate: '/gists/${id}/star',
+		urlData: {
+			id: id
+		}
 	}, callback);
 };
 
