@@ -46,7 +46,7 @@ HTTPRequest.prototype.send = function(callback) {
 		// Add the event listeners
 		request.addEventListener('readystatechange', function() {
 			// Check if the request is done
-			if(request.readyState === 4 && request.status === 200) {
+			if(request.readyState === 4) {
 				// It is, send the data to the callback
 				callback.call(null, request.responseText);
 			}
