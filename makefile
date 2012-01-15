@@ -18,6 +18,3 @@ normal:
 
 minified:
 	uglifyjs -o github.min.js github.js
-
-documentation:
-	docco github.js
