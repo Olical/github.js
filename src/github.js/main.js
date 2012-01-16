@@ -16,14 +16,10 @@
 		// Set any passed options
 		this.setOptions(options);
 		
-		// Initialise the API classes
-		for(i = 0; i < this.apiClasses.length; i += 1) {
-			ac = this.apiClasses[i];
-			
-			// Load the class
-			this[ac.key] = new ac.apiClass;
-			
-			// Pass the instance to it
-			this[ac.key].instance = this;
+		// Pass the instance into the API objects
+		for(i in this) {
+			if(this[i] instanceof GitHub.APIObject) {
+				this[i].instance = this;
+			}
 		}
 	}

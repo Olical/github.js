@@ -1,7 +1,5 @@
-/**
- * API class for interacting with GitHub gists
- */
-function gistsApi() {}
+// API class for interacting with GitHub gists
+var gistsApi = new GitHub.APIObject();
 
 /**
  * Creates a gist with the data you provide
@@ -25,7 +23,7 @@ function gistsApi() {}
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.create = function(settings, callback) {
+gistsApi.create = function(settings, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists',
 		method: 'POST',
@@ -58,7 +56,7 @@ gistsApi.prototype.create = function(settings, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.edit = function(id, settings, callback) {
+gistsApi.edit = function(id, settings, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}',
 		urlData: {
@@ -76,7 +74,7 @@ gistsApi.prototype.edit = function(id, settings, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.remove = function(id, callback) {
+gistsApi.remove = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}',
 		urlData: {
@@ -92,7 +90,7 @@ gistsApi.prototype.remove = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.get = function(callback) {
+gistsApi.get = function(callback) {
 	return this.instance.get({
 		urlTemplate: '/gists'
 	}, callback);
@@ -104,7 +102,7 @@ gistsApi.prototype.get = function(callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getPublic = function(callback) {
+gistsApi.getPublic = function(callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/public'
 	}, callback);
@@ -116,7 +114,7 @@ gistsApi.prototype.getPublic = function(callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getStarred = function(callback) {
+gistsApi.getStarred = function(callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/starred'
 	}, callback);
@@ -129,7 +127,7 @@ gistsApi.prototype.getStarred = function(callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getFromUser = function(user, callback) {
+gistsApi.getFromUser = function(user, callback) {
 	return this.instance.get({
 		urlTemplate: '/users/${user}/gists',
 		urlData: {
@@ -145,7 +143,7 @@ gistsApi.prototype.getFromUser = function(user, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getById = function(id, callback) {
+gistsApi.getById = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}',
 		urlData: {
@@ -161,7 +159,7 @@ gistsApi.prototype.getById = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.fork = function(id, callback) {
+gistsApi.fork = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/fork',
 		urlData: {
@@ -178,7 +176,7 @@ gistsApi.prototype.fork = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.star = function(id, callback) {
+gistsApi.star = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/star',
 		urlData: {
@@ -195,7 +193,7 @@ gistsApi.prototype.star = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.unstar = function(id, callback) {
+gistsApi.unstar = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/star',
 		urlData: {
@@ -212,7 +210,7 @@ gistsApi.prototype.unstar = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.starred = function(id, callback) {
+gistsApi.starred = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/star',
 		urlData: {
@@ -228,7 +226,7 @@ gistsApi.prototype.starred = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getComments = function(id, callback) {
+gistsApi.getComments = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/comments',
 		urlData: {
@@ -244,7 +242,7 @@ gistsApi.prototype.getComments = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.getComment = function(id, callback) {
+gistsApi.getComment = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/comments/${id}',
 		urlData: {
@@ -261,7 +259,7 @@ gistsApi.prototype.getComment = function(id, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.comment = function(id, content, callback) {
+gistsApi.comment = function(id, content, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/${id}/comments',
 		urlData: {
@@ -282,7 +280,7 @@ gistsApi.prototype.comment = function(id, content, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.editComment = function(id, content, callback) {
+gistsApi.editComment = function(id, content, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/comments/${id}',
 		urlData: {
@@ -302,7 +300,7 @@ gistsApi.prototype.editComment = function(id, content, callback) {
  * @param {Function} callback If passed it will be come an async request. Results will be passed to this
  * @returns {Mixed} The decoded JSON response if you did not pass a callback
  */
-gistsApi.prototype.removeComment = function(id, callback) {
+gistsApi.removeComment = function(id, callback) {
 	return this.instance.get({
 		urlTemplate: '/gists/comments/${id}',
 		urlData: {
@@ -313,4 +311,4 @@ gistsApi.prototype.removeComment = function(id, callback) {
 };
 
 // Register the API
-GitHub.registerApi('gists', gistsApi);
+GitHub.implement('gists', gistsApi);
