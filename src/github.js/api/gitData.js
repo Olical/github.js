@@ -43,4 +43,4 @@ gitDataApi.createBlob = function(user, repo, settings, callback) {
 };
 
 // Register the API
-GitHub.implement('gitDataApi', gitDataApi);
+GitHub.implement('gitData', gitDataApi);

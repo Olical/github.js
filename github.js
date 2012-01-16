@@ -698,6 +698,6 @@ gitDataApi.createBlob = function(user, repo, settings, callback) {
 };
 
 // Register the API
-GitHub.implement('gitDataApi', gitDataApi);	// Expose the class
+GitHub.implement('gitData', gitDataApi);	// Expose the class
 	exports.GitHub = GitHub;
 }(this));
