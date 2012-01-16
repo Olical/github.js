@@ -25,7 +25,4 @@ GitHub.extend('implement', function(key, value) {
 /**
  * Base class to extend when adding API objects
  */
-GitHub.extend('APIObject', function() {
-	// The instance will be loaded into here
-	this.instance = null;
-});
+GitHub.extend('APIObject', function() {});
