@@ -1,5 +1,5 @@
 /**
- * GitHub JavaScript API v0.0.1
+ * GitHub JavaScript API v0.0.2
  * https://github.com/Wolfy87/github.js
  */
 (function(exports) {
