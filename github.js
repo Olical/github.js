@@ -1,5 +1,5 @@
 /**
- * GitHub JavaScript API v0.0.1
+ * GitHub JavaScript API v0.0.2
  * https://github.com/Wolfy87/github.js
  */
 (function(exports) {
@@ -678,6 +678,12 @@ gitDataApi.getBlob = function(user, repo, sha, callback) {
 
 /**
  * Creates a blob with your specified encoding and content
+ * For some reason the returned base64 has line breaks, this means it cannot be decoded in the browser
+ * To decode it, use this function. It will strip line breaks first. Just pass the blob object to it
+ * 
+ * 	function decodeBlob(blob) {
+ * 		return atob(blob.content.replace(/\n/g, ''));
+ * 	}
  * 
  * @param {String} user The owner of the repository
  * @param {String} repo The repositories name

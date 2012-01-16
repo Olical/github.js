@@ -11,7 +11,7 @@ There are **no dependencies** in the front end. You must have [node.js](http://n
 My aim is to cover the **whole API**. This is the current status.
 
  * full - Gists
- * none - Git data
+ * partial - Git data
  * none - Issues
  * none - Organisations
  * none - Pull requests
