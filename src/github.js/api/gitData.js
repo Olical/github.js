@@ -68,5 +68,26 @@ gitDataApi.getCommit = function(user, repo, sha, callback) {
 	}, callback);
 };
 
+/**
+ * Creates a commit in the repository you specify
+ * 
+ * @param {String} user The owner of the repository
+ * @param {String} repo The repositories name
+ * @param {Object} settings An object containing your new blobs encoding and content 
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gitDataApi.createCommit = function(user, repo, settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/repos/${user}/${repo}/git/commits',
+		urlData: {
+			user: user,
+			repo: repo
+		},
+		data: settings,
+		method: 'POST'
+	}, callback);
+};
+
 // Register the API
 GitHub.implement('gitData', gitDataApi);
