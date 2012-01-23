@@ -3,6 +3,8 @@
  * https://github.com/Wolfy87/github.js
  */
 (function(exports) {
+	'use strict';
+	
 	/**
 	 * GitHub API v3 class
 	 * 
