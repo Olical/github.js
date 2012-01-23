@@ -89,5 +89,29 @@ gitDataApi.createCommit = function(user, repo, settings, callback) {
 	}, callback);
 };
 
+// TODO - References
+
+/**
+ * Gets a tags information from the passed data
+ * 
+ * @param {String} user The owner of the repository
+ * @param {String} repo The repositories name
+ * @param {String} sha The sha of the tag
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gitDataApi.getTag = function(user, repo, sha, callback) {
+	return this.instance.get({
+		urlTemplate: '/repos/${user}/${repo}/git/tags/${sha}',
+		urlData: {
+			user: user,
+			repo: repo,
+			sha: sha
+		}
+	}, callback);
+};
+
+// TODO - Trees
+
 // Register the API
 GitHub.implement('gitData', gitDataApi);
