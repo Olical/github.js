@@ -111,6 +111,27 @@ gitDataApi.getTag = function(user, repo, sha, callback) {
 	}, callback);
 };
 
+/**
+ * Adds a tag from the passed data
+ * 
+ * @param {String} user The owner of the repository
+ * @param {String} repo The repositories name
+ * @param {Object} settings An object containing your new tags settings
+ * @param {Function} callback If passed it will be come an async request. Results will be passed to this
+ * @returns {Mixed} The decoded JSON response if you did not pass a callback
+ */
+gitDataApi.createTag = function(user, repo, settings, callback) {
+	return this.instance.get({
+		urlTemplate: '/repos/${user}/${repo}/git/tags',
+		urlData: {
+			user: user,
+			repo: repo
+		},
+		data: settings,
+		method: 'POST'
+	}, callback);
+};
+
 // TODO - Trees
 
 // Register the API
