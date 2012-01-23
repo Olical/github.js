@@ -3,6 +3,8 @@
  * https://github.com/Wolfy87/github.js
  */
 (function(exports) {
+	'use strict';
+	
 	/**
 	 * GitHub API v3 class
 	 * 
@@ -142,7 +144,7 @@ HTTPRequest.prototype.send = function(callback) {
 	
 	// Authenticate if required
 	if(this.options.user && this.options.password) {
-		request.setRequestHeader('Authorization', 'Basic ' + btoa(this.options.user + ':' + this.options.password));
+		request.setRequestHeader('Authorization', 'Basic ' + window.btoa(this.options.user + ':' + this.options.password));
 	}
 	
 	if(this.options.async && callback) {
